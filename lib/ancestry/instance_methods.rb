@@ -114,6 +114,15 @@ module Ancestry
       self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_conditions
     end
 
+    def ancestor_and_self_conditions
+      t = get_arel_table
+      t[get_primary_key_column].in(ancestor_ids << self.id)
+    end
+
+    def ancestors_and_self depth_options = {}
+      self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_and_self_conditions
+    end
+
     def ancestor_was_conditions
       {primary_key_with_table => ancestor_ids_was}
     end
@@ -239,6 +248,15 @@ module Ancestry
 
     def descendants depth_options = {}
       self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_conditions
+    end
+
+    def descendant_and_self_conditions
+      t = get_arel_table
+      t[get_ancestry_column].matches("#{child_ancestry << self.id}/%").or(t[get_ancestry_column].eq(child_ancestry << self.id))
+    end
+
+    def descendants_and_self depth_options = {}
+      self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_and_self_conditions
     end
 
     def descendant_ids depth_options = {}

@@ -110,8 +110,13 @@ module Ancestry
       t[get_primary_key_column].in(ancestor_ids)
     end
 
-    def ancestors depth_options = {}
-      self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_conditions
+    def ancestors options = {:scoped => true}
+      scoped, depth_options = options.delete(:scoped), options
+      unless scoped.nil?
+        self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where(:is_active => scoped).where ancestor_conditions
+      else
+        self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_conditions
+      end
     end
 
     def ancestor_and_self_conditions
@@ -119,8 +124,13 @@ module Ancestry
       t[get_primary_key_column].in(ancestor_ids << self.id)
     end
 
-    def ancestors_and_self depth_options = {}
-      self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_and_self_conditions
+    def ancestors_and_self options = {:scoped => true}
+      scoped, depth_options = options.delete(:scoped), options
+      unless scoped.nil?
+        self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where(:is_active => scoped).where ancestor_and_self_conditions
+      else
+        self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_and_self_conditions
+      end
     end
 
     def ancestor_was_conditions
@@ -140,8 +150,13 @@ module Ancestry
       t[get_primary_key_column].in(path_ids)
     end
 
-    def path depth_options = {}
-      self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where path_conditions
+    def path options = {:scoped => true}
+      scoped, depth_options = options.delete(:scoped), options
+      unless scoped.nil?
+        self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where(:is_active => scoped).where path_conditions
+      else
+        self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where path_conditions
+      end
     end
 
     def depth
@@ -246,21 +261,31 @@ module Ancestry
       t[get_ancestry_column].matches("#{child_ancestry}/%").or(t[get_ancestry_column].eq(child_ancestry))
     end
 
-    def descendants depth_options = {}
-      self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_conditions
+    def descendants options = {:scoped => true}
+      scoped, depth_options = options.delete(:scoped), options
+      unless scoped.nil?
+        self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where(:is_active => scoped).where descendant_conditions
+      else
+        self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_conditions
+      end
     end
 
     def descendant_and_self_conditions
       t = get_arel_table
-      t[get_ancestry_column].matches("#{child_ancestry << self.id}/%").or(t[get_ancestry_column].eq(child_ancestry << self.id))
+      t[get_ancestry_column].matches("#{child_ancestry}/%").or(t[get_ancestry_column].eq(child_ancestry)).or(t[:id].eq(self.id))
     end
 
-    def descendants_and_self depth_options = {}
-      self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_and_self_conditions
+    def descendants_and_self options = {:scoped => true}
+      scoped, depth_options = options.delete(:scoped), options
+      unless scoped.nil?
+        self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where(:is_active => scoped).where descendant_and_self_conditions
+      else
+        self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_and_self_conditions
+      end
     end
 
-    def descendant_ids depth_options = {}
-      descendants(depth_options).select(self.ancestry_base_class.primary_key).collect(&self.ancestry_base_class.primary_key.to_sym)
+    def descendant_ids options = {}
+      descendants(options).select(self.ancestry_base_class.primary_key).collect(&self.ancestry_base_class.primary_key.to_sym)
     end
 
     # Subtree
@@ -270,12 +295,17 @@ module Ancestry
       t[get_primary_key_column].eq(self.id).or(t[get_ancestry_column].matches("#{child_ancestry}/%")).or(t[get_ancestry_column].eq(child_ancestry))
     end
 
-    def subtree depth_options = {}
-      self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where subtree_conditions
+    def subtree options = {:scoped => true}
+      scoped, depth_options = options.delete(:scoped), options
+      unless scoped.nil?
+        self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where(:is_active => scoped).where subtree_conditions
+      else
+        self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where subtree_conditions
+      end
     end
 
-    def subtree_ids depth_options = {}
-      subtree(depth_options).select(self.ancestry_base_class.primary_key).collect(&self.ancestry_base_class.primary_key.to_sym)
+    def subtree_ids options = {}
+      subtree(options).select(self.ancestry_base_class.primary_key).collect(&self.ancestry_base_class.primary_key.to_sym)
     end
 
     # Callback disabling

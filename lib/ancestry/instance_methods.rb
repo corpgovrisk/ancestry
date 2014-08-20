@@ -284,7 +284,7 @@ module Ancestry
       end
     end
 
-    def descendant_ids options = {}
+    def descendant_ids options = {:scoped => true}
       descendants(options).select(self.ancestry_base_class.primary_key).collect(&self.ancestry_base_class.primary_key.to_sym)
     end
 

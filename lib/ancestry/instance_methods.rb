@@ -113,7 +113,7 @@ module Ancestry
     def ancestors options = {:scoped => true}
       options = HashWithIndifferentAccess.new(options)
       scoped, depth_options = options.delete(:scoped), options
-      unless scoped.to_sym.eql? :skip
+      unless scoped.to_s.to_sym.eql? :skip
         self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where(:is_active => scoped).where ancestor_conditions
       else
         self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_conditions
@@ -128,7 +128,7 @@ module Ancestry
     def ancestors_and_self options = {:scoped => true}
       options = HashWithIndifferentAccess.new(options)
       scoped, depth_options = options.delete(:scoped), options
-      unless scoped.to_sym.eql? :skip
+      unless scoped.to_s.to_sym.eql? :skip
         self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where(:is_active => scoped).where ancestor_and_self_conditions
       else
         self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where ancestor_and_self_conditions
@@ -155,7 +155,7 @@ module Ancestry
     def path options = {:scoped => true}
       options = HashWithIndifferentAccess.new(options)
       scoped, depth_options = options.delete(:scoped), options
-      unless scoped.to_sym.eql? :skip
+      unless scoped.to_s.to_sym.eql? :skip
         self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where(:is_active => scoped).where path_conditions
       else
         self.ancestry_base_class.scope_depth(depth_options, depth).ordered_by_ancestry.where path_conditions
@@ -267,7 +267,7 @@ module Ancestry
     def descendants options = {:scoped => true}
       options = HashWithIndifferentAccess.new(options)
       scoped, depth_options = options.delete(:scoped), options
-      unless scoped.to_sym.eql? :skip
+      unless scoped.to_s.to_sym.eql? :skip
         self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where(:is_active => scoped).where descendant_conditions
       else
         self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_conditions
@@ -285,7 +285,7 @@ module Ancestry
     def descendants_and_self options = {:scoped => true}
       options = HashWithIndifferentAccess.new(options)
       scoped, depth_options = options.delete(:scoped), options
-      unless scoped.to_sym.eql? :skip
+      unless scoped.to_s.to_sym.eql? :skip
         self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where(:is_active => scoped).where descendant_and_self_conditions
       else
         self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where descendant_and_self_conditions
@@ -306,7 +306,7 @@ module Ancestry
     def subtree options = {:scoped => true}
       options = HashWithIndifferentAccess.new(options)
       scoped, depth_options = options.delete(:scoped), options
-      unless scoped.to_sym.eql? :skip
+      unless scoped.to_s.to_sym.eql? :skip
         self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where(:is_active => scoped).where subtree_conditions
       else
         self.ancestry_base_class.ordered_by_ancestry.scope_depth(depth_options, depth).where subtree_conditions

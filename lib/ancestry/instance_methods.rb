@@ -281,7 +281,7 @@ module Ancestry
 
     # # Option1: {scoped: true} to get active items
     # # Option2: {scoped: false} to get inactive items
-    # # Option3: {scoped: skip} to skip
+    # # Option3: {scoped: :skip} to skip
     def descendants_and_self options = {:scoped => true}
       options = HashWithIndifferentAccess.new(options)
       scoped, depth_options = options.delete(:scoped), options
